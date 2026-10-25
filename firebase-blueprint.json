@@ -1,0 +1,256 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account information and profile details",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Unique Firebase Authentication User ID"
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User full name"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Optional contact phone number"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp when the user profile was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp when the user profile was last updated"
+        }
+      },
+      "required": ["userId", "email", "displayName"]
+    },
+    "Appointment": {
+      "title": "Patient Consultation Appointment",
+      "description": "Scheduled hospital appointment for a signed-in patient",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Appointment reference identifier"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID"
+        },
+        "patientName": {
+          "type": "string",
+          "description": "Full name of patient"
+        },
+        "age": {
+          "type": "number",
+          "description": "Patient age in years"
+        },
+        "contactNumber": {
+          "type": "string",
+          "description": "Patient phone number"
+        },
+        "email": {
+          "type": "string",
+          "description": "Patient email"
+        },
+        "departmentId": {
+          "type": "string",
+          "description": "Hospital medical department ID"
+        },
+        "departmentName": {
+          "type": "string",
+          "description": "Hospital medical department display name"
+        },
+        "doctorId": {
+          "type": "string",
+          "description": "Doctor reference ID"
+        },
+        "doctorName": {
+          "type": "string",
+          "description": "Attending doctor name"
+        },
+        "date": {
+          "type": "string",
+          "description": "Appointment date YYYY-MM-DD"
+        },
+        "timeSlot": {
+          "type": "string",
+          "description": "Scheduled time slot"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Reason for medical consultation"
+        },
+        "status": {
+          "type": "string",
+          "description": "Appointment booking status: Confirmed, Completed, Cancelled"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of booking creation"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "patientName",
+        "age",
+        "contactNumber",
+        "email",
+        "departmentId",
+        "departmentName",
+        "doctorId",
+        "doctorName",
+        "date",
+        "timeSlot",
+        "reason",
+        "status",
+        "createdAt"
+      ]
+    },
+    "LabReport": {
+      "title": "Saved Lab Analysis Report",
+      "description": "Clinical lab analysis report saved with explicit user consent",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique lab report ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID"
+        },
+        "patientSex": {
+          "type": "string",
+          "description": "Biological sex: male or female"
+        },
+        "patientAge": {
+          "type": "number",
+          "description": "Patient age at test time"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Formatted report generation timestamp"
+        },
+        "totalTestsEntered": {
+          "type": "number",
+          "description": "Number of tests evaluated"
+        },
+        "abnormalCount": {
+          "type": "number",
+          "description": "Number of flagged abnormal tests"
+        },
+        "criticalCount": {
+          "type": "number",
+          "description": "Number of urgent/critical tests"
+        },
+        "analyzedItems": {
+          "type": "array",
+          "description": "List of analyzed lab test details"
+        },
+        "multiMarkerInsights": {
+          "type": "array",
+          "description": "Multi-marker clinical patterns"
+        },
+        "doctorDiscussionQuestions": {
+          "type": "array",
+          "description": "Questions suggested for doctor review"
+        },
+        "safetyDisclaimer": {
+          "type": "string",
+          "description": "Medical safety disclaimer"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "patientSex",
+        "patientAge",
+        "timestamp",
+        "totalTestsEntered",
+        "abnormalCount",
+        "criticalCount",
+        "analyzedItems",
+        "safetyDisclaimer",
+        "createdAt"
+      ]
+    },
+    "DoctorSlot": {
+      "title": "Doctor Booked Slot",
+      "description": "Anonymous public slot availability marker for hospital scheduling without patient information",
+      "type": "object",
+      "properties": {
+        "slotId": {
+          "type": "string",
+          "description": "Slot identifier format doctorId_date_timeslot"
+        },
+        "doctorId": {
+          "type": "string",
+          "description": "Doctor identifier"
+        },
+        "date": {
+          "type": "string",
+          "description": "Consultation date YYYY-MM-DD"
+        },
+        "timeSlot": {
+          "type": "string",
+          "description": "Consultation time slot string"
+        },
+        "status": {
+          "type": "string",
+          "description": "Slot booking status: booked or available"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of slot reservation"
+        }
+      },
+      "required": [
+        "slotId",
+        "doctorId",
+        "date",
+        "timeSlot",
+        "status"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/User"
+      },
+      "description": "User profiles restricted to the authenticated owner"
+    },
+    "/appointments/{appointmentId}": {
+      "schema": {
+        "$ref": "#/entities/Appointment"
+      },
+      "description": "Consultation appointments strictly private to the patient (userId == auth.uid)"
+    },
+    "/labReports/{reportId}": {
+      "schema": {
+        "$ref": "#/entities/LabReport"
+      },
+      "description": "Consensually saved clinical lab reports accessible only to the patient"
+    },
+    "/doctorBookedSlots/{slotId}": {
+      "schema": {
+        "$ref": "#/entities/DoctorSlot"
+      },
+      "description": "Anonymous slot reservation status for doctor schedule conflict prevention without patient PII"
+    }
+  }
+}

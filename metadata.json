@@ -1,0 +1,7 @@
+{
+  "name": "City Hospital",
+  "description": "Modern hospital healthcare platform with department directory, doctor profiles, online appointment booking, and an interactive clinical lab report analyzer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // User profiles - only owner can read, create, or update
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isOwner(userId) && request.resource.data.userId == userId;
+      allow delete: if isOwner(userId);
+    }
+
+    // Appointments - strictly restricted to the patient whose userId matches auth.uid
+    // Ownership cannot be transferred, reads are restricted to owner, cancellation restricted to owner
+    match /appointments/{appointmentId} {
+      // Single doc read: only owner
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Collection query: only if query is filtered by userId == request.auth.uid
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Creation: must assign userId strictly to current auth.uid
+      allow create: if isSignedIn() 
+        && request.resource.data.userId == request.auth.uid;
+
+      // Update: only the appointment owner, and owner ID is immutable
+      // Allows cancellation or owner updates
+      allow update: if isSignedIn() 
+        && resource.data.userId == request.auth.uid 
+        && request.resource.data.userId == resource.data.userId;
+
+      // Deletion: only owner
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Lab Reports - strictly private clinical records saved only with consent
+    match /labReports/{reportId} {
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid && request.resource.data.userId == resource.data.userId;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Doctor booked slots - anonymous availability flags (no patient information or PII)
+    match /doctorBookedSlots/{slotId} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+  }
+}

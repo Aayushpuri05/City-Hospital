@@ -1,0 +1,833 @@
+import { Department, Doctor, LabTestMetadata, Appointment } from '../types';
+
+export const HOSPITAL_INFO = {
+  name: 'City Hospital',
+  tagline: 'Your Health, Our Priority',
+  established: 1988,
+  address: 'East Bandra, Mumbai, Maharashtra, India 400051',
+  phone: '+91 22 2650 2489',
+  emergencyPhone: '+91 22 2650 9111 (24/7 Emergency)',
+  email: 'care@cityhospital-mumbai.org',
+  hours: '24 Hours / 7 Days a week (Emergency & Inpatient)',
+  opdHours: 'Monday – Saturday: 8:00 AM – 8:00 PM',
+  sampleDataNotice: 'City Hospital Mumbai Portal — All doctor appointments and records are securely stored.',
+};
+
+export const DEPARTMENTS: Department[] = [
+  {
+    id: 'cardiology',
+    name: 'Cardiology',
+    tagline: 'Comprehensive Heart & Vascular Care',
+    description: 'Advanced diagnostic catheterization, cardiac electrophysiology, heart failure management, and preventive cardiovascular wellness programs.',
+    icon: 'HeartPulse',
+    headOfDepartment: 'Dr. Arthur Vance, MD, FACC',
+    location: 'West Pavilion, 3rd Floor',
+    bedCount: 64,
+    emergencyAvailable: true,
+    services: [
+      'Diagnostic Echocardiography & ECG',
+      'Coronary Angiography & Stenting',
+      'Cardiac Rhythm & Pacemaker Clinic',
+      'Preventive Lipid & Hypertension Clinic',
+      'Heart Failure Rehabilitation'
+    ],
+    keyProcedures: ['Coronary Angioplasty', 'Holter Monitoring', 'Cardiac MRI', 'TAVR Evaluation']
+  },
+  {
+    id: 'neurology',
+    name: 'Neurology',
+    tagline: 'Precision Brain, Spine & Nerve Medicine',
+    description: 'Multidisciplinary treatment of stroke, epilepsy, neuromuscular disorders, Parkinson’s disease, headache syndromes, and memory health.',
+    icon: 'Brain',
+    headOfDepartment: 'Dr. Elena Rostova, MD, PhD',
+    location: 'North Tower, 5th Floor',
+    bedCount: 48,
+    emergencyAvailable: true,
+    services: [
+      'Comprehensive Stroke Rapid-Response Unit',
+      'High-Resolution Video-EEG Monitoring',
+      'Movement Disorders & Parkinson’s Care',
+      'Neuro-immunology & Multiple Sclerosis Clinic',
+      'Sleep Medicine & Polysomnography'
+    ],
+    keyProcedures: ['Electromyography (EMG)', 'Nerve Conduction Studies', 'Lumbar Puncture Analysis', 'Botox for Migraine']
+  },
+  {
+    id: 'orthopedics',
+    name: 'Orthopedics',
+    tagline: 'Joint Preservation, Trauma & Sports Medicine',
+    description: 'Robotic-assisted joint replacement, arthroscopic surgery, sports injury rehabilitation, and complex fracture reconstructive orthopedics.',
+    icon: 'Activity',
+    headOfDepartment: 'Dr. Marcus Sterling, MD, FAAOS',
+    location: 'South Pavilion, 2nd Floor',
+    bedCount: 52,
+    emergencyAvailable: true,
+    services: [
+      'Robotic Knee & Hip Arthroplasty',
+      'Sports Injury & Arthroscopic Ligament Repair',
+      'Spine & Scoliosis Corrective Center',
+      'Pediatric Orthopedic Assessment',
+      'Physical Therapy & Kinetic Recovery'
+    ],
+    keyProcedures: ['Total Knee Replacement', 'ACL Reconstruction', 'Rotator Cuff Repair', 'Spinal Decompression']
+  },
+  {
+    id: 'general-medicine',
+    name: 'General Medicine',
+    tagline: 'Primary Healthcare & Complex Internal Medicine',
+    description: 'Adult disease prevention, chronic condition management, executive wellness screenings, and diagnosis of multisystem medical conditions.',
+    icon: 'Stethoscope',
+    headOfDepartment: 'Dr. Samuel Chen, MD, FACP',
+    location: 'Central Atrium, 1st Floor',
+    bedCount: 80,
+    emergencyAvailable: true,
+    services: [
+      'Executive Annual Health Checkups',
+      'Chronic Disease Management (Hypertension, Cholesterol)',
+      'Infectious Disease & Tropical Medicine',
+      'Pre-operative Medical Clearance',
+      'Adult Preventive Immunization Programs'
+    ],
+    keyProcedures: ['Comprehensive Internal Workups', 'Diagnostic Paracentesis', 'Adult Health Risk Profiling']
+  },
+  {
+    id: 'pediatrics',
+    name: 'Pediatrics',
+    tagline: 'Compassionate Care for Newborns, Children & Teens',
+    description: 'Dedicated pediatric inpatient wing, neonatology, developmental milestone tracking, adolescent medicine, and child immunizations.',
+    icon: 'Baby',
+    headOfDepartment: 'Dr. Meera Patel, MD, FAAP',
+    location: 'Children’s Pavilion, 4th Floor',
+    bedCount: 40,
+    emergencyAvailable: true,
+    services: [
+      'Well-Baby & Newborn Neonatal Care',
+      'Childhood Vaccination & Immunization',
+      'Pediatric Asthma & Allergy Management',
+      'Developmental & Behavioral Pediatrics',
+      'Pediatric Emergency Assessment'
+    ],
+    keyProcedures: ['Newborn Screenings', 'Pediatric Spirometry', 'Child Allergy Skin Prick Testing']
+  },
+  {
+    id: 'gynecology',
+    name: 'Gynecology & Obstetrics',
+    tagline: 'Dedicated Women’s Health, Maternity & Wellness',
+    description: 'Family planning, prenatal and high-risk obstetric care, minimally invasive laparoscopic gynecologic surgery, and menopause support.',
+    icon: 'HeartHandshake',
+    headOfDepartment: 'Dr. Sarah Jenkins, MD, FACOG',
+    location: 'Maternity Wing, 3rd Floor',
+    bedCount: 45,
+    emergencyAvailable: true,
+    services: [
+      'Comprehensive Prenatal, Labor & Delivery Suites',
+      'High-Risk Pregnancy Maternal-Fetal Medicine',
+      'Minimally Invasive Laparoscopic Surgery',
+      'PCOS, Endometriosis & Pelvic Pain Clinic',
+      'Menopause & Bone Density Evaluation'
+    ],
+    keyProcedures: ['3D/4D Obstetric Ultrasound', 'Colposcopy & Cervical Health', 'Hysteroscopy', 'Laparoscopic Myomectomy']
+  },
+  {
+    id: 'dermatology',
+    name: 'Dermatology',
+    tagline: 'Clinical, Surgical & Aesthetic Skin Health',
+    description: 'Dermatopathology, early skin cancer screening, phototherapy, chronic eczema and psoriasis therapeutics, and scar revision.',
+    icon: 'Sparkles',
+    headOfDepartment: 'Dr. Chloe Dubois, MD, FAAD',
+    location: 'Plaza Wing, Suite 104',
+    bedCount: 16,
+    emergencyAvailable: false,
+    services: [
+      'Digital Dermoscopy & Mole Mapping',
+      'Mohs Micrographic Skin Surgery',
+      'Biologics Clinic for Psoriasis & Atopic Dermatitis',
+      'Acne & Rosacea Specialized Protocols',
+      'Narrowband UVB Phototherapy Unit'
+    ],
+    keyProcedures: ['Skin Biopsy & Excision', 'Cryosurgery', 'Patch Allergy Testing', 'Laser Phototherapy']
+  },
+  {
+    id: 'gastroenterology',
+    name: 'Gastroenterology',
+    tagline: 'Digestive Health, Endoscopy & Liver Medicine',
+    description: 'Advanced gastrointestinal endoscopy, liver disease management, inflammatory bowel disease (IBD) care, and acid reflux therapeutics.',
+    icon: 'Layers',
+    headOfDepartment: 'Dr. Tariq Al-Mansoor, MD, FACG',
+    location: 'East Wing, 2nd Floor',
+    bedCount: 36,
+    emergencyAvailable: true,
+    services: [
+      'High-Definition Diagnostic & Therapeutic Endoscopy',
+      'Colonoscopy & Polypectomy Screening',
+      'Hepatology & Fatty Liver / Hepatitis Clinic',
+      'IBD Center (Crohn’s Disease & Ulcerative Colitis)',
+      'Esophageal Motility & 24hr pH Impedance Testing'
+    ],
+    keyProcedures: ['Upper Endoscopy (EGD)', 'Colonoscopy', 'Endoscopic Retrograde Cholangiopancreatography (ERCP)', 'FibroScan']
+  },
+  {
+    id: 'nephrology',
+    name: 'Nephrology',
+    tagline: 'Renal Function, Dialysis & Kidney Health',
+    description: 'Diagnosis and management of acute kidney injury, chronic kidney disease, hypertensive renal disease, kidney stones, and hemodialysis.',
+    icon: 'ShieldAlert',
+    headOfDepartment: 'Dr. Kenneth O’Connor, MD, FASN',
+    location: 'West Tower, 4th Floor',
+    bedCount: 32,
+    emergencyAvailable: true,
+    services: [
+      'Inpatient & Outpatient Hemodialysis Center',
+      'Chronic Kidney Disease (CKD) Staging & Management',
+      'Renal Hypertension & Glomerulonephritis Clinic',
+      'Kidney Stone Metabolic Workup & Prevention',
+      'Pre-Transplant Kidney Evaluation'
+    ],
+    keyProcedures: ['Renal Biopsy', 'Vascular Access Monitoring', '24-Hour Urine Clearance Profiling', 'Acute Continuous RRT']
+  },
+  {
+    id: 'endocrinology',
+    name: 'Endocrinology',
+    tagline: 'Hormonal Balance, Diabetes & Metabolic Health',
+    description: 'Evidence-based management of Type 1 and Type 2 diabetes, thyroid nodules and disorders, osteoporosis, adrenal, and pituitary conditions.',
+    icon: 'Flame',
+    headOfDepartment: 'Dr. Kimberly Adams, MD, FACE',
+    location: 'North Tower, 2nd Floor',
+    bedCount: 24,
+    emergencyAvailable: false,
+    services: [
+      'Comprehensive Diabetes Management & Education',
+      'Continuous Glucose Monitoring (CGM) & Insulin Pump Center',
+      'Thyroid Ultrasound & Fine Needle Aspiration',
+      'Osteoporosis & Bone Mineral Density Center',
+      'Adrenal, Pituitary & Parathyroid Disorders'
+    ],
+    keyProcedures: ['Thyroid Fine Needle Aspiration (FNA)', 'Continuous Glucose Sensor Fitting', 'Dynamic Hormone Stimulation Testing']
+  }
+];
+
+export const DOCTORS: Doctor[] = [
+  // Cardiology
+  {
+    id: 'doc-cardio-1',
+    name: 'Dr. Arthur Vance',
+    departmentId: 'cardiology',
+    departmentName: 'Cardiology',
+    photo: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400',
+    gender: 'male',
+    specialization: 'Interventional Cardiology & Coronary Angioplasty',
+    qualifications: 'MD, FACC, FSCAI (Harvard Medical School)',
+    experienceYears: 18,
+    consultationDays: ['Monday', 'Wednesday', 'Friday'],
+    availableSlots: ['09:00 AM', '10:30 AM', '02:00 PM', '03:30 PM'],
+    room: 'Cardio Suite 301',
+    rating: 4.9,
+    reviewsCount: 142,
+    bio: 'Pioneer in minimally invasive catheter stenting and complex coronary interventions with over 3,000 successful procedures.',
+    languages: ['English', 'German']
+  },
+  {
+    id: 'doc-cardio-2',
+    name: 'Dr. Rebecca Foster',
+    departmentId: 'cardiology',
+    departmentName: 'Cardiology',
+    photo: 'https://images.unsplash.com/photo-1594824813591-10c735e5d36e?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'Cardiovascular Imaging & Preventive Cardiology',
+    qualifications: 'MD, FESC (Johns Hopkins University)',
+    experienceYears: 12,
+    consultationDays: ['Tuesday', 'Thursday', 'Saturday'],
+    availableSlots: ['09:30 AM', '11:00 AM', '01:30 PM', '04:00 PM'],
+    room: 'Cardio Suite 305',
+    rating: 4.8,
+    reviewsCount: 98,
+    bio: 'Specialist in 3D echocardiography, heart disease prevention, and women’s cardiovascular health programs.',
+    languages: ['English', 'Spanish']
+  },
+  {
+    id: 'doc-cardio-3',
+    name: 'Dr. Neil Harrison',
+    departmentId: 'cardiology',
+    departmentName: 'Cardiology',
+    photo: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400',
+    gender: 'male',
+    specialization: 'Cardiac Electrophysiology & Arrhythmia',
+    qualifications: 'MBBS, MD, FHRS (Stanford Medicine)',
+    experienceYears: 15,
+    consultationDays: ['Monday', 'Tuesday', 'Thursday'],
+    availableSlots: ['10:00 AM', '11:30 AM', '02:30 PM', '04:30 PM'],
+    room: 'Cardio Suite 308',
+    rating: 4.9,
+    reviewsCount: 116,
+    bio: 'Expert in catheter ablation for atrial fibrillation and pacemaker/ICD implantation.',
+    languages: ['English']
+  },
+
+  // Neurology
+  {
+    id: 'doc-neuro-1',
+    name: 'Dr. Elena Rostova',
+    departmentId: 'neurology',
+    departmentName: 'Neurology',
+    photo: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'Stroke Neurology & Cerebrovascular Disorders',
+    qualifications: 'MD, PhD, FAAN (Columbia University)',
+    experienceYears: 20,
+    consultationDays: ['Monday', 'Wednesday', 'Thursday'],
+    availableSlots: ['08:30 AM', '10:00 AM', '01:00 PM', '03:00 PM'],
+    room: 'Neuro Suite 502',
+    rating: 4.9,
+    reviewsCount: 164,
+    bio: 'Director of the Acute Stroke Unit, recognized for fast-acting thrombolysis protocols and neurocritical recovery.',
+    languages: ['English', 'Russian']
+  },
+  {
+    id: 'doc-neuro-2',
+    name: 'Dr. Julian Morales',
+    departmentId: 'neurology',
+    departmentName: 'Neurology',
+    photo: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400',
+    gender: 'male',
+    specialization: 'Epilepsy & Movement Disorders',
+    qualifications: 'MD, FAES (Yale School of Medicine)',
+    experienceYears: 14,
+    consultationDays: ['Tuesday', 'Friday', 'Saturday'],
+    availableSlots: ['09:00 AM', '11:00 AM', '02:00 PM', '04:00 PM'],
+    room: 'Neuro Suite 509',
+    rating: 4.8,
+    reviewsCount: 103,
+    bio: 'Dedicated to complex seizure management, clinical neurophysiology, and deep brain stimulation (DBS) therapy.',
+    languages: ['English', 'Spanish']
+  },
+
+  // Orthopedics
+  {
+    id: 'doc-ortho-1',
+    name: 'Dr. Marcus Sterling',
+    departmentId: 'orthopedics',
+    departmentName: 'Orthopedics',
+    photo: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&q=80&w=400',
+    gender: 'male',
+    specialization: 'Robotic Joint Replacement & Reconstructive Surgery',
+    qualifications: 'MD, FAAOS (University of Pennsylvania)',
+    experienceYears: 22,
+    consultationDays: ['Monday', 'Wednesday', 'Friday'],
+    availableSlots: ['08:00 AM', '10:30 AM', '01:30 PM', '03:30 PM'],
+    room: 'Ortho Suite 210',
+    rating: 4.9,
+    reviewsCount: 215,
+    bio: 'Leader in computer-navigated and robotic knee and hip arthroplasty with an emphasis on rapid postoperative mobilization.',
+    languages: ['English']
+  },
+  {
+    id: 'doc-ortho-2',
+    name: 'Dr. Priya Sundaram',
+    departmentId: 'orthopedics',
+    departmentName: 'Orthopedics',
+    photo: 'https://images.unsplash.com/photo-1594824813682-1d54e4df9878?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'Sports Medicine & Arthroscopic Shoulder/Knee Surgery',
+    qualifications: 'MBBS, MS (Ortho), Fellowship Sports Med (Oxford)',
+    experienceYears: 11,
+    consultationDays: ['Tuesday', 'Thursday', 'Saturday'],
+    availableSlots: ['09:30 AM', '11:30 AM', '02:00 PM', '04:30 PM'],
+    room: 'Ortho Suite 218',
+    rating: 4.8,
+    reviewsCount: 89,
+    bio: 'Team physician consultant for regional athletics, specializing in ligament reconstruction and cartilage restoration.',
+    languages: ['English', 'Hindi', 'Tamil']
+  },
+
+  // General Medicine
+  {
+    id: 'doc-genmed-1',
+    name: 'Dr. Samuel Chen',
+    departmentId: 'general-medicine',
+    departmentName: 'General Medicine',
+    photo: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400',
+    gender: 'male',
+    specialization: 'Internal Medicine & Chronic Disease Management',
+    qualifications: 'MD, FACP (UCSF Medical Center)',
+    experienceYears: 19,
+    consultationDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    availableSlots: ['08:30 AM', '10:00 AM', '11:30 AM', '02:30 PM', '04:00 PM'],
+    room: 'Medicine Clinic 101',
+    rating: 4.9,
+    reviewsCount: 310,
+    bio: 'Passionate about comprehensive preventive care, treating complex internal medicine conditions, and lifestyle health optimization.',
+    languages: ['English', 'Mandarin']
+  },
+  {
+    id: 'doc-genmed-2',
+    name: 'Dr. Laura Bennett',
+    departmentId: 'general-medicine',
+    departmentName: 'General Medicine',
+    photo: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'Geriatric & Preventive Adult Health',
+    qualifications: 'MD, MPH (Duke University)',
+    experienceYears: 13,
+    consultationDays: ['Tuesday', 'Thursday', 'Friday', 'Saturday'],
+    availableSlots: ['09:00 AM', '10:30 AM', '01:00 PM', '03:00 PM'],
+    room: 'Medicine Clinic 106',
+    rating: 4.8,
+    reviewsCount: 145,
+    bio: 'Specialist in multi-medication review, healthy aging, metabolic screening, and chronic fatigue evaluations.',
+    languages: ['English', 'French']
+  },
+
+  // Pediatrics
+  {
+    id: 'doc-pedia-1',
+    name: 'Dr. Meera Patel',
+    departmentId: 'pediatrics',
+    departmentName: 'Pediatrics',
+    photo: 'https://images.unsplash.com/photo-1594824813591-10c735e5d36e?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'General Pediatrics & Neonatal Wellness',
+    qualifications: 'MD, FAAP (Northwestern University)',
+    experienceYears: 16,
+    consultationDays: ['Monday', 'Wednesday', 'Friday', 'Saturday'],
+    availableSlots: ['08:30 AM', '10:30 AM', '01:30 PM', '03:30 PM'],
+    room: 'Pediatric Pavilion 401',
+    rating: 4.9,
+    reviewsCount: 220,
+    bio: 'Dedicated child advocate focused on infant development milestones, childhood infectious illness, and supportive parent education.',
+    languages: ['English', 'Gujarati']
+  },
+  {
+    id: 'doc-pedia-2',
+    name: 'Dr. David Thorne',
+    departmentId: 'pediatrics',
+    departmentName: 'Pediatrics',
+    photo: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400',
+    gender: 'male',
+    specialization: 'Pediatric Pulmonology & Allergy Care',
+    qualifications: 'MD, FAAP (Boston Children’s Hospital)',
+    experienceYears: 12,
+    consultationDays: ['Tuesday', 'Thursday', 'Friday'],
+    availableSlots: ['09:00 AM', '11:00 AM', '02:00 PM', '04:00 PM'],
+    room: 'Pediatric Pavilion 408',
+    rating: 4.8,
+    reviewsCount: 94,
+    bio: 'Focuses on childhood asthma protocols, environmental allergens, recurrent respiratory infections, and pediatric sports fitness.',
+    languages: ['English']
+  },
+
+  // Gynecology
+  {
+    id: 'doc-gyn-1',
+    name: 'Dr. Sarah Jenkins',
+    departmentId: 'gynecology',
+    departmentName: 'Gynecology & Obstetrics',
+    photo: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'High-Risk Obstetrics & Minimally Invasive Gynecologic Surgery',
+    qualifications: 'MD, FACOG (Baylor College of Medicine)',
+    experienceYears: 17,
+    consultationDays: ['Monday', 'Tuesday', 'Thursday'],
+    availableSlots: ['09:00 AM', '10:30 AM', '01:30 PM', '03:30 PM'],
+    room: 'Women’s Suite 312',
+    rating: 4.9,
+    reviewsCount: 180,
+    bio: 'Compassionate care for prenatal management, high-risk twin pregnancies, endometriosis management, and hysteroscopy.',
+    languages: ['English']
+  },
+  {
+    id: 'doc-gyn-2',
+    name: 'Dr. Ananya Roy',
+    departmentId: 'gynecology',
+    departmentName: 'Gynecology & Obstetrics',
+    photo: 'https://images.unsplash.com/photo-1594824813682-1d54e4df9878?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'Reproductive Endocrinology & Menopause Health',
+    qualifications: 'MD, FACOG, Fellowship Reproductive Medicine (Cornell)',
+    experienceYears: 11,
+    consultationDays: ['Wednesday', 'Friday', 'Saturday'],
+    availableSlots: ['09:30 AM', '11:30 AM', '02:00 PM', '04:00 PM'],
+    room: 'Women’s Suite 316',
+    rating: 4.8,
+    reviewsCount: 112,
+    bio: 'Dedicated to PCOS management, fertility evaluation, hormonal transitions, and preventive cervical screening.',
+    languages: ['English', 'Bengali', 'Hindi']
+  },
+
+  // Dermatology
+  {
+    id: 'doc-derm-1',
+    name: 'Dr. Chloe Dubois',
+    departmentId: 'dermatology',
+    departmentName: 'Dermatology',
+    photo: 'https://images.unsplash.com/photo-1594824813591-10c735e5d36e?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'Medical Dermatology & Skin Cancer Surveillance',
+    qualifications: 'MD, FAAD (NYU Grossman School of Medicine)',
+    experienceYears: 14,
+    consultationDays: ['Monday', 'Tuesday', 'Wednesday'],
+    availableSlots: ['09:00 AM', '10:30 AM', '01:00 PM', '03:00 PM'],
+    room: 'Derm Plaza 104',
+    rating: 4.9,
+    reviewsCount: 175,
+    bio: 'Specialist in early melanoma detection via high-res dermoscopy, severe psoriasis biologics, and autoimmune skin disorders.',
+    languages: ['English', 'French']
+  },
+  {
+    id: 'doc-derm-2',
+    name: 'Dr. Anthony Rios',
+    departmentId: 'dermatology',
+    departmentName: 'Dermatology',
+    photo: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400',
+    gender: 'male',
+    specialization: 'Procedural Dermatology & Acne Therapeutics',
+    qualifications: 'MD, FAAD (Emory University)',
+    experienceYears: 10,
+    consultationDays: ['Thursday', 'Friday', 'Saturday'],
+    availableSlots: ['10:00 AM', '11:30 AM', '02:30 PM', '04:30 PM'],
+    room: 'Derm Plaza 108',
+    rating: 4.7,
+    reviewsCount: 88,
+    bio: 'Expert in cyst removals, scar rejuvenation, treatment-resistant acne regimens, and patch allergy testing.',
+    languages: ['English', 'Spanish']
+  },
+
+  // Gastroenterology
+  {
+    id: 'doc-gastro-1',
+    name: 'Dr. Tariq Al-Mansoor',
+    departmentId: 'gastroenterology',
+    departmentName: 'Gastroenterology',
+    photo: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400',
+    gender: 'male',
+    specialization: 'Therapeutic Endoscopy & Liver Diseases',
+    qualifications: 'MD, FACG (Cleveland Clinic)',
+    experienceYears: 18,
+    consultationDays: ['Monday', 'Wednesday', 'Thursday'],
+    availableSlots: ['08:30 AM', '10:30 AM', '01:30 PM', '03:30 PM'],
+    room: 'GI Center 204',
+    rating: 4.9,
+    reviewsCount: 153,
+    bio: 'Renowned expert in fatty liver staging, viral hepatitis management, and screening colonoscopies for colorectal cancer prevention.',
+    languages: ['English', 'Arabic']
+  },
+  {
+    id: 'doc-gastro-2',
+    name: 'Dr. Christine Harper',
+    departmentId: 'gastroenterology',
+    departmentName: 'Gastroenterology',
+    photo: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'Inflammatory Bowel Disease & Motility',
+    qualifications: 'MD, AGAF (University of Chicago Medicine)',
+    experienceYears: 13,
+    consultationDays: ['Tuesday', 'Friday', 'Saturday'],
+    availableSlots: ['09:30 AM', '11:00 AM', '02:00 PM', '04:00 PM'],
+    room: 'GI Center 211',
+    rating: 4.8,
+    reviewsCount: 104,
+    bio: 'Specialist in Crohn’s, Ulcerative Colitis, GERD pH monitoring, and personalized nutritional gut health.',
+    languages: ['English']
+  },
+
+  // Nephrology
+  {
+    id: 'doc-nephro-1',
+    name: 'Dr. Kenneth O’Connor',
+    departmentId: 'nephrology',
+    departmentName: 'Nephrology',
+    photo: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&q=80&w=400',
+    gender: 'male',
+    specialization: 'Chronic Kidney Disease & Hemodialysis Care',
+    qualifications: 'MD, FASN (Mayo Clinic College of Medicine)',
+    experienceYears: 21,
+    consultationDays: ['Monday', 'Tuesday', 'Thursday'],
+    availableSlots: ['08:30 AM', '10:00 AM', '01:30 PM', '03:30 PM'],
+    room: 'Renal Suite 402',
+    rating: 4.9,
+    reviewsCount: 167,
+    bio: 'Dedicated to slowing CKD progression, managing complex resistant hypertension, and optimal hemodialysis access.',
+    languages: ['English']
+  },
+  {
+    id: 'doc-nephro-2',
+    name: 'Dr. Sunita Rao',
+    departmentId: 'nephrology',
+    departmentName: 'Nephrology',
+    photo: 'https://images.unsplash.com/photo-1594824813682-1d54e4df9878?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'Glomerular Diseases & Kidney Stone Prevention',
+    qualifications: 'MBBS, MD, FASN (Vanderbilt Medical Center)',
+    experienceYears: 12,
+    consultationDays: ['Wednesday', 'Friday', 'Saturday'],
+    availableSlots: ['09:00 AM', '11:00 AM', '02:00 PM', '04:00 PM'],
+    room: 'Renal Suite 407',
+    rating: 4.8,
+    reviewsCount: 81,
+    bio: 'Specialist in metabolic evaluation of recurrent kidney stones, nephrotic syndrome, and diabetic kidney disease protection.',
+    languages: ['English', 'Hindi', 'Kannada']
+  },
+
+  // Endocrinology
+  {
+    id: 'doc-endo-1',
+    name: 'Dr. Kimberly Adams',
+    departmentId: 'endocrinology',
+    departmentName: 'Endocrinology',
+    photo: 'https://images.unsplash.com/photo-1594824813591-10c735e5d36e?auto=format&fit=crop&q=80&w=400',
+    gender: 'female',
+    specialization: 'Diabetes Mellitus & Continuous Glucose Technology',
+    qualifications: 'MD, FACE (Joslin Diabetes Center / Harvard)',
+    experienceYears: 16,
+    consultationDays: ['Monday', 'Wednesday', 'Friday'],
+    availableSlots: ['09:00 AM', '10:30 AM', '01:30 PM', '03:30 PM'],
+    room: 'Endo Clinic 202',
+    rating: 4.9,
+    reviewsCount: 195,
+    bio: 'Specialist in intensive insulin therapy, CGM interpretation, prediabetes reversal strategies, and metabolic health.',
+    languages: ['English']
+  },
+  {
+    id: 'doc-endo-2',
+    name: 'Dr. Warren Scott',
+    departmentId: 'endocrinology',
+    departmentName: 'Endocrinology',
+    photo: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400',
+    gender: 'male',
+    specialization: 'Thyroid Nodules, Parathyroid & Bone Metabolism',
+    qualifications: 'MD, ECNU, FACE (Yale School of Medicine)',
+    experienceYears: 15,
+    consultationDays: ['Tuesday', 'Thursday', 'Saturday'],
+    availableSlots: ['09:30 AM', '11:30 AM', '02:00 PM', '04:00 PM'],
+    room: 'Endo Clinic 208',
+    rating: 4.8,
+    reviewsCount: 130,
+    bio: 'Expert in in-office ultrasound-guided thyroid biopsy, osteoporosis therapy, calcium disorders, and pituitary conditions.',
+    languages: ['English']
+  }
+];
+
+export const LAB_TESTS_METADATA: Record<string, LabTestMetadata> = {
+  hemoglobin: {
+    id: 'hemoglobin',
+    name: 'Hemoglobin (Hb)',
+    shortName: 'Hemoglobin',
+    unit: 'g/dL',
+    category: 'Hematology',
+    defaultMaleRange: [13.5, 17.5],
+    defaultFemaleRange: [12.0, 15.5],
+    plausibleRange: [4.0, 24.0],
+    criticalLow: 7.0,
+    criticalHigh: 20.0,
+    whatItMeasures: 'The oxygen-carrying protein in red blood cells that transports vital oxygen from your lungs to all tissues and organs.',
+    clinicalSignificance: 'Low hemoglobin suggests anemia (e.g., iron deficiency, vitamin deficiency, or blood loss). Elevated hemoglobin can indicate dehydration, smoking, lung condition, or polycythemia.',
+    commonCausesHigh: ['Severe dehydration', 'Chronic hypoxia (high altitude, smoking, COPD)', 'Polycythemia vera', 'Erythropoietin elevation'],
+    commonCausesLow: ['Iron deficiency anemia', 'Chronic blood loss (GI or menstrual)', 'Nutritional deficiencies (B12, Folate)', 'Chronic kidney or inflammatory diseases']
+  },
+  wbc: {
+    id: 'wbc',
+    name: 'White Blood Cell Count (WBC)',
+    shortName: 'WBC',
+    unit: 'cells/µL',
+    category: 'Hematology',
+    defaultMaleRange: [4000, 11000],
+    defaultFemaleRange: [4000, 11000],
+    plausibleRange: [500, 100000],
+    criticalLow: 2000,
+    criticalHigh: 30000,
+    whatItMeasures: 'The total count of white blood cells (leukocytes) in circulation, representing the immune system’s defense team against pathogens and inflammation.',
+    clinicalSignificance: 'Elevated WBC (leukocytosis) commonly reflects acute bacterial infection, physical stress, trauma, or inflammatory states. Low WBC (leukopenia) may increase vulnerability to infections.',
+    commonCausesHigh: ['Bacterial or viral infections', 'Systemic inflammation or tissue trauma', 'Corticosteroid medication', 'Acute physiological stress or leukemia'],
+    commonCausesLow: ['Viral illnesses (e.g., influenza, dengue)', 'Bone marrow suppression', 'Autoimmune conditions', 'Chemotherapy or immunosuppressive drugs']
+  },
+  platelets: {
+    id: 'platelets',
+    name: 'Platelet Count',
+    shortName: 'Platelets',
+    unit: 'cells/µL',
+    category: 'Hematology',
+    defaultMaleRange: [150000, 450000],
+    defaultFemaleRange: [150000, 450000],
+    plausibleRange: [10000, 1500000],
+    criticalLow: 50000,
+    criticalHigh: 900000,
+    whatItMeasures: 'Small, disc-shaped blood fragments produced in bone marrow essential for normal blood clotting and vessel repair.',
+    clinicalSignificance: 'Significantly low platelets (thrombocytopenia) raise the risk of easy bruising or bleeding. High platelets (thrombocytosis) can occur reactively due to inflammation, iron deficiency, or marrow disorders.',
+    commonCausesHigh: ['Reactive response to acute infection/inflammation', 'Iron deficiency', 'Post-splenectomy', 'Essential thrombocythemia'],
+    commonCausesLow: ['Viral infections', 'Medication side effects (e.g. heparin, antibiotics)', 'Autoimmune destruction (ITP)', 'Liver disease with enlarged spleen', 'Bone marrow disorders']
+  },
+  mcv: {
+    id: 'mcv',
+    name: 'Mean Corpuscular Volume (MCV)',
+    shortName: 'MCV',
+    unit: 'fL',
+    category: 'Hematology',
+    defaultMaleRange: [80, 100],
+    defaultFemaleRange: [80, 100],
+    plausibleRange: [50, 140],
+    criticalLow: 65,
+    criticalHigh: 120,
+    whatItMeasures: 'The average physical size (volume in femtoliters) of your circulating red blood cells. (Note: Commonly mistyped as MCB).',
+    clinicalSignificance: 'Helps characterize the underlying mechanism of anemia. MCV < 80 fL is microcytic (cells are small, typical of iron deficiency or thalassemia trait). MCV > 100 fL is macrocytic (large cells, often B12/folate deficiency, alcohol, thyroid, or medication effect).',
+    commonCausesHigh: ['Vitamin B12 or Folate deficiency', 'Alcohol consumption', 'Hypothyroidism', 'Liver disease', 'Certain medications (e.g., methotrexate, hydroxyurea)'],
+    commonCausesLow: ['Iron deficiency', 'Thalassemia minor/trait', 'Anemia of chronic disease', 'Lead exposure or sideroblastic anemia']
+  },
+  fasting_glucose: {
+    id: 'fasting_glucose',
+    name: 'Fasting Blood Glucose',
+    shortName: 'Fasting Glucose',
+    unit: 'mg/dL',
+    category: 'Metabolic & Diabetes',
+    defaultMaleRange: [70, 99],
+    defaultFemaleRange: [70, 99],
+    plausibleRange: [20, 800],
+    criticalLow: 55,
+    criticalHigh: 300,
+    whatItMeasures: 'Concentration of glucose (sugar) circulating in the blood after an overnight fast (minimum 8–10 hours).',
+    clinicalSignificance: 'Standard screening marker for insulin regulation and glucose metabolism. Below 70 mg/dL is low (hypoglycemia risk). 70–99 mg/dL is normal. 100–125 mg/dL indicates prediabetes range. 126 mg/dL or higher falls into the diabetes screening threshold.',
+    commonCausesHigh: ['Prediabetes or Diabetes mellitus', 'Recent food intake before test (non-fasting state)', 'Severe acute stress or illness', 'Steroid medications or acute pancreatitis'],
+    commonCausesLow: ['Excessive insulin or diabetes medication dose', 'Prolonged fasting or intense exertion without carbohydrate intake', 'Severe liver disease', 'Adrenal insufficiency'],
+    screeningThresholds: {
+      lowRiskMax: 99,
+      prediabetesMin: 100,
+      prediabetesMax: 125,
+      diabetesThreshold: 126
+    }
+  },
+  hba1c: {
+    id: 'hba1c',
+    name: 'Hemoglobin A1c (HbA1c)',
+    shortName: 'HbA1c',
+    unit: '%',
+    category: 'Metabolic & Diabetes',
+    defaultMaleRange: [4.0, 5.6], // Below 5.7% is normal
+    defaultFemaleRange: [4.0, 5.6],
+    plausibleRange: [3.5, 18.0],
+    criticalHigh: 10.0,
+    whatItMeasures: 'The percentage of hemoglobin bound to glucose, reflecting your average blood sugar levels over the past 2 to 3 months.',
+    clinicalSignificance: 'Gold-standard marker for glycemic control. Below 5.7% is normal. 5.7% to 6.4% falls in the prediabetes range. 6.5% or higher is in the diabetes threshold. Diagnosis requires clinician assessment and repeat confirmation.',
+    commonCausesHigh: ['Chronic hyperglycemia', 'Insulin resistance or metabolic syndrome', 'Type 2 or Type 1 diabetes mellitus', 'Inadequate glycemic therapeutic control'],
+    commonCausesLow: ['Shortened red blood cell lifespan (e.g. hemolytic anemia)', 'Recent heavy blood loss or transfusion', 'Chronic kidney disease on erythropoietin', 'Certain hemoglobinopathies'],
+    screeningThresholds: {
+      lowRiskMax: 5.6,
+      prediabetesMin: 5.7,
+      prediabetesMax: 6.4,
+      diabetesThreshold: 6.5
+    }
+  },
+  creatinine: {
+    id: 'creatinine',
+    name: 'Serum Creatinine',
+    shortName: 'Creatinine',
+    unit: 'mg/dL',
+    category: 'Renal & Liver Function',
+    defaultMaleRange: [0.7, 1.3],
+    defaultFemaleRange: [0.6, 1.1],
+    plausibleRange: [0.2, 20.0],
+    criticalHigh: 3.0,
+    whatItMeasures: 'A natural waste byproduct of normal muscle metabolism, filtered out by healthy kidneys and excreted in urine.',
+    clinicalSignificance: 'Key marker used in calculating estimated Glomerular Filtration Rate (eGFR) to evaluate kidney function. Must be interpreted alongside muscle mass, age, sex, and hydration status.',
+    commonCausesHigh: ['Dehydration or reduced renal blood flow', 'Acute kidney injury (medications, contrast, infection)', 'Chronic kidney disease', 'High dietary meat intake or heavy muscular build'],
+    commonCausesLow: ['Low muscle mass or muscle wasting (sarcopenia)', 'Severe malnutrition or vegetative state', 'Pregnancy (due to increased renal clearance)']
+  },
+  alt: {
+    id: 'alt',
+    name: 'Alanine Aminotransferase (ALT)',
+    shortName: 'ALT',
+    unit: 'U/L',
+    category: 'Renal & Liver Function',
+    defaultMaleRange: [7, 55],
+    defaultFemaleRange: [7, 45],
+    plausibleRange: [2, 2500],
+    criticalHigh: 250,
+    whatItMeasures: 'An enzyme concentrated primarily inside liver cells (hepatocytes). When liver cells are injured or inflamed, ALT leaks into the bloodstream.',
+    clinicalSignificance: 'Sensitive indicator of hepatocellular stress or injury. Mild elevations are frequently related to fatty liver, medications, alcohol, or viral exposures. Substantial spikes warrant timely clinical investigation.',
+    commonCausesHigh: ['Metabolic dysfunction-associated steatotic liver disease (fatty liver)', 'Medication effect (acetaminophen, statins, NSAIDs)', 'Alcohol consumption', 'Viral hepatitis (A, B, C, EBV)', 'Gallbladder or bile duct issues'],
+    commonCausesLow: ['Generally normal finding with no clinical pathology; rarely associated with severe vitamin B6 deficiency or advanced end-stage cirrhosis']
+  }
+};
+
+export const LAB_SAMPLE_PRESETS = [
+  {
+    name: 'Normal Executive Health Panel',
+    description: 'All 8 laboratory parameters comfortably within healthy adult reference ranges.',
+    patientSex: 'female' as const,
+    patientAge: 38,
+    values: {
+      hemoglobin: 13.8,
+      wbc: 6500,
+      platelets: 260000,
+      mcv: 88,
+      fasting_glucose: 86,
+      hba1c: 5.2,
+      creatinine: 0.8,
+      alt: 22
+    }
+  },
+  {
+    name: 'Prediabetes & Metabolic Evaluation',
+    description: 'Elevated fasting glucose (112 mg/dL) & HbA1c (5.9%) illustrating prediabetes screening criteria.',
+    patientSex: 'male' as const,
+    patientAge: 52,
+    values: {
+      hemoglobin: 15.1,
+      wbc: 7200,
+      platelets: 230000,
+      mcv: 90,
+      fasting_glucose: 112,
+      hba1c: 5.9,
+      creatinine: 1.0,
+      alt: 38
+    }
+  },
+  {
+    name: 'Microcytic Anemia & Fatigue Profile',
+    description: 'Reduced hemoglobin (10.2 g/dL) with low MCV (72 fL) representing a microcytic anemia pattern.',
+    patientSex: 'female' as const,
+    patientAge: 29,
+    values: {
+      hemoglobin: 10.2,
+      wbc: 5800,
+      platelets: 420000,
+      mcv: 72,
+      fasting_glucose: 91,
+      hba1c: 5.1,
+      creatinine: 0.7,
+      alt: 18
+    }
+  },
+  {
+    name: 'Liver & Renal Functional Stress Profile',
+    description: 'Mildly elevated serum creatinine (1.6 mg/dL) and elevated ALT (78 U/L) indicating multi-organ follow-up.',
+    patientSex: 'male' as const,
+    patientAge: 59,
+    values: {
+      hemoglobin: 14.2,
+      wbc: 8400,
+      platelets: 195000,
+      mcv: 92,
+      fasting_glucose: 96,
+      hba1c: 5.4,
+      creatinine: 1.6,
+      alt: 78
+    }
+  },
+  {
+    name: 'High Fasting Glucose / Diabetes Alert',
+    description: 'Markedly elevated fasting glucose (148 mg/dL) and HbA1c (7.8%) requiring prompt physician review.',
+    patientSex: 'male' as const,
+    patientAge: 46,
+    values: {
+      hemoglobin: 14.5,
+      wbc: 8100,
+      platelets: 280000,
+      mcv: 89,
+      fasting_glucose: 148,
+      hba1c: 7.8,
+      creatinine: 1.1,
+      alt: 42
+    }
+  }
+];
+
+export const INITIAL_APPOINTMENTS: Appointment[] = [];
+
